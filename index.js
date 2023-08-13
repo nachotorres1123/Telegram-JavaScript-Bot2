@@ -16,25 +16,32 @@ async function start() {
   const bot = new Bot(botToken);
   bot.use(autoQuote);
 
-  const commandFilesDir = path.resolve(__dirname, "commands");
-  const commandFiles = fs
-    .readdirSync(commandFilesDir)
-    .filter((file) => file.endsWith(".js"));
+  // main.js
 
-  for (const file of commandFiles) {
-    const command = require(path.join(commandFilesDir, file));
-    bot.command(command.name, async (ctx) => {
-      await command.handler(ctx);
-    });
+// ... (código existente)
 
-    if (command.alias) {
-      for (const alias of command.alias) {
-        bot.command(alias, async (ctx) => {
-          await command.handler(ctx);
-        });
-      }
+const commandFilesDir = path.resolve(__dirname, "commands");
+const commandFiles = fs
+  .readdirSync(commandFilesDir)
+  .filter((file) => file.endsWith(".js"));
+
+for (const file of commandFiles) {
+  const command = require(path.join(commandFilesDir, file));
+  bot.command(command.name, async (ctx) => {
+    await command.handler(ctx);
+  });
+
+  if (command.alias) {
+    for (const alias of command.alias) {
+      bot.command(alias, async (ctx) => {
+        await command.handler(ctx);
+      });
     }
   }
+}
+
+// ... (código existente)
+
 
   bot.command("start", (ctx) =>
     ctx.reply("Hello!\n\n" + "Run the /help command to see what I can do!")
